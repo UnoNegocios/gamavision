@@ -1,0 +1,6 @@
+{
+	"appId": "com.example.myvuefirstappradio",
+	"appName": "Dominio App",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}

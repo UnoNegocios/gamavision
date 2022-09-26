@@ -1,0 +1,119 @@
+<template>
+  <ion-page>
+    <ion-content v-if="news.show" :fullscreen="true">
+
+          <div style="margin-top:10px;" v-for="(element, index) in news.data" v-bind:key="index">
+            <ion-card style="margin-top:10px;" :router-link="`/detail/${element.id}`">
+              <ion-img class="ion-justify-content-start" :src="element.yoast_head_json.og_image[0].url" ></ion-img>
+              <div class="ion-padding">
+                <ion-card-title style="font-size: 18px; font-weight: 600; margin-bottom:10px;"  v-html="element.title.rendered"></ion-card-title>
+                <ion-card-subtitle>{{dateFormat(element.date)}}</ion-card-subtitle>
+              </div>
+            </ion-card>
+            <div v-if="( ( index - 1 ) % 3 ) == 0">
+              <ion-img style="margin:30px;" src="https://cdn.buttercms.com/77XpQo2GQsCaLn8TMBZS" ></ion-img>
+            </div>
+          </div>
+
+      <!--/div-->
+    </ion-content>
+  </ion-page>
+</template>
+
+<script>
+import { IonText, IonContent, IonHeader, IonSegment, IonChip, IonPage, IonTitle, IonCard, IonCardTitle, IonImg, IonCardSubtitle } from '@ionic/vue';
+import { defineComponent } from 'vue';
+import axios from 'axios'
+
+export default defineComponent({
+  name: 'Posts',
+  components: {
+    IonContent,
+    IonHeader,
+    IonPage,
+    IonTitle,
+    IonText,
+    IonCard,
+    IonCardTitle,
+    IonImg,
+    IonSegment, 
+    IonChip, 
+    IonCardSubtitle
+  },
+  data(){
+    return{
+      slides:[],
+      news:{
+        data:[],
+        show:false
+      }
+    }
+  },
+  computed:{
+    categories(){
+      return this.$store.state.categories.categories
+    }
+  },
+  methods:{
+    dateFormat(date){
+        // Creamos el objeto fecha instanciándolo con la clase Date
+        const fecha = new Date(date.slice(0,10));
+        // Creamos array con los días de la semana
+        const dias_semana = ['Domingo', 'Lunes', 'martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        //Creamos constante para el dia de hoy
+        const hoy = new Date(new Date().toLocaleString("sv-SE", {timeZone: "America/Monterrey"}).slice(0,10))
+        //sacamos diferencia
+        const difference = (Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()) - Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()))/(1000*60*60*24)
+        // Creamos array con los meses del año
+        const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        // Construimos el formato de salida
+        if(fecha.getUTCFullYear()!=new Date().getUTCFullYear()){
+            return dias_semana[fecha.getDay()] + ', ' + fecha.getDate() + ' de ' + meses[fecha.getMonth()];
+        }else{
+            return dias_semana[fecha.getDay()] + ', ' + fecha.getDate() + ' de ' + meses[fecha.getMonth()] + ' de ' + fecha.getUTCFullYear();
+        }
+        
+    },
+  },
+  created(){
+    var filter = ''
+    if(this.$route.params.id!='inicio'){
+      filter = '&categories='+this.$route.params.id
+    }
+    axios.get('https://dominiomedios.com/wp-json/wp/v2/posts?_fields=id,date,title,yoast_head_json.og_image'+filter).then(response => {
+      this.news.data = Object.freeze(response.data)
+      this.news.show = true
+    })
+  }
+});
+</script>
+
+<style scoped>
+#container {
+  text-align: center;
+  
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+  
+  color: #8c8c8c;
+  
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+</style>
