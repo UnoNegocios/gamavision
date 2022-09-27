@@ -8,7 +8,7 @@ const getters = {};
 const actions = {
     getCategories( {commit} ){
         return new Promise((resolve, reject) => {
-            axios.get('https://dominiomedios.com/wp-json/wp/v2/categories?include=23,26,24,21,13,20,22').then(response => {
+            axios.get('https://gv.unocrm.mx/api/v1/news/categories').then(response => {
                 commit('setCategories', response.data);
                 resolve(response.data[0].id)
             })

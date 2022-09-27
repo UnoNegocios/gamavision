@@ -9,8 +9,8 @@ const getters = {};
 const actions = {
   getResults({commit}, filter) {
     commit("setLoader", true)
-    axios.get('https://dominiomedios.com/wp-json/wp/v2/search?search='+filter).then(response => {
-      commit("setResult", response.data)
+    axios.get('https://gv.unocrm.mx/api/v1/news?filter[search]'+filter).then(response => {
+      commit("setResult", response.data.data)
       router.push('/search')
       commit("setLoader", false)
     }).catch(error=>{

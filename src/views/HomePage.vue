@@ -5,15 +5,15 @@
         <marquee style="background:#1f1f1f; padding:9px 0px 7px 0px;">
           <span v-for="(element, index) in slides.data" v-bind:key="index">
             <ion-chip style="height: 20px; background: white; color: black; font-weight: 600; font-size: 12px; transform: translateY(-1px); border-radius:5px;">
-              {{element._embedded['wp:term'][0][0].name}}
+              {{element.categories[0].name}}
             </ion-chip>
-            <span style="margin-right:20px; margin-left:5px; color:white;">{{element.title.rendered}}</span>
+            <span style="margin-right:20px; margin-left:5px; color:white;">{{element.title}}</span>
           </span>
         </marquee>
 
         <ion-slides pager="true" :options="slideOpts" v-if="slides.show">
-          <ion-slide :router-link="`/detail/${slide.id}`" v-for="(slide, index) in slides.data" v-bind:key="index" :style="'background-size: cover!important; background-blend-mode: multiply; background-color: rgba(0,0,0,0.55); height:50vh; background-image: url(' + slide.yoast_head_json.og_image[0].url + ');'">
-              <h1 style="position:absolute; bottom:0px; padding:10px; color:white!important;">{{slide.title.rendered}}</h1>
+          <ion-slide :router-link="`/detail/${slide.id}`" v-for="(slide, index) in slides.data" v-bind:key="index" :style="'background-size: cover!important; background-blend-mode: multiply; background-color: rgba(0,0,0,0.55); height:50vh; background-image: url(' + slide.featured_media_path + ');'">
+              <h1 style="position:absolute; bottom:0px; padding:10px; color:white!important;">{{slide.title}}</h1>
           </ion-slide>
         </ion-slides>        
 
@@ -41,10 +41,10 @@
 
           <div v-if="news.show" style="margin-top:40px;">
             <ion-card style="margin-top:10px;" v-for="(element, index) in news.data" v-bind:key="index" :router-link="`/detail/${element.id}`">
-              <ion-img class="ion-justify-content-start" :src="element.yoast_head_json.og_image[0].url" ></ion-img>
+              <ion-img class="ion-justify-content-start" :src="element.featured_media_path" ></ion-img>
               <div class="ion-padding">
-                <ion-card-title style="font-size: 18px; font-weight: 600; margin-bottom:10px;"  v-html="element.title.rendered"></ion-card-title>
-                <ion-card-subtitle>{{dateFormat(element.date)}}</ion-card-subtitle>
+                <ion-card-title style="font-size: 18px; font-weight: 600; margin-bottom:10px;"  v-html="element.title"></ion-card-title>
+                <ion-card-subtitle>{{dateFormat(element.created_at)}}</ion-card-subtitle>
               </div>
             </ion-card>
           </div>
@@ -131,9 +131,9 @@ export default defineComponent({
     },
     segmentChanged(category_id) {
       if(category_id=='inicio'){
-        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'&per_page=3', category:''})
+        this.$store.dispatch('posts/getPosts', '3')
       }else{
-        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'&per_page=3', category:'&categories='+this.category})
+        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'3', category:this.category})
       }
     },
     dateFormat(date){

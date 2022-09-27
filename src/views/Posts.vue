@@ -4,10 +4,10 @@
 
           <div style="margin-top:10px;" v-for="(element, index) in news.data" v-bind:key="index">
             <ion-card style="margin-top:10px;" :router-link="`/detail/${element.id}`">
-              <ion-img class="ion-justify-content-start" :src="element.yoast_head_json.og_image[0].url" ></ion-img>
+              <ion-img class="ion-justify-content-start" :src="element.featured_media_path" ></ion-img>
               <div class="ion-padding">
-                <ion-card-title style="font-size: 18px; font-weight: 600; margin-bottom:10px;"  v-html="element.title.rendered"></ion-card-title>
-                <ion-card-subtitle>{{dateFormat(element.date)}}</ion-card-subtitle>
+                <ion-card-title style="font-size: 18px; font-weight: 600; margin-bottom:10px;"  v-html="element.title"></ion-card-title>
+                <ion-card-subtitle>{{dateFormat(element.created_at)}}</ion-card-subtitle>
               </div>
             </ion-card>
             <div v-if="( ( index - 1 ) % 3 ) == 0">
@@ -56,6 +56,7 @@ export default defineComponent({
   },
   methods:{
     dateFormat(date){
+      if(date!=undefined){
         // Creamos el objeto fecha instanciándolo con la clase Date
         const fecha = new Date(date.slice(0,10));
         // Creamos array con los días de la semana
@@ -72,16 +73,16 @@ export default defineComponent({
         }else{
             return dias_semana[fecha.getDay()] + ', ' + fecha.getDate() + ' de ' + meses[fecha.getMonth()] + ' de ' + fecha.getUTCFullYear();
         }
-        
+      }
     },
   },
   created(){
     var filter = ''
     if(this.$route.params.id!='inicio'){
-      filter = '&categories='+this.$route.params.id
+      filter = '?filter[Categories.id]='+this.$route.params.id
     }
-    axios.get('https://dominiomedios.com/wp-json/wp/v2/posts?_fields=id,date,title,yoast_head_json.og_image'+filter).then(response => {
-      this.news.data = Object.freeze(response.data)
+    axios.get('https://gv.unocrm.mx/api/v1/news'+filter).then(response => {
+      this.news.data = Object.freeze(response.data.data)
       this.news.show = true
     })
   }

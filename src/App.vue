@@ -187,7 +187,7 @@ export default defineComponent({
     this.checkLogin()
     this.$store.dispatch('posts/getPosts', 6)
     this.$store.dispatch('categories/getCategories').then(response=>{
-      this.$store.dispatch('posts/getPostByCategory', {items_per_page:'&per_page=3', category:''})
+      this.$store.dispatch('posts/getPostByCategory', {items_per_page:'3', category:''})
     })
     var lat = 25.67507
     var lon = -100.31847

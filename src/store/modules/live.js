@@ -5,7 +5,7 @@ const state = {
     lives:[],
     live:{
         "id": 3,
-        "name": "Dominio Medios Canal 1",
+        "name": "GAMAVISION Canal 1",
         "image_url": "1659044925.webp",
         "url": "https://streamyes.alsolnet.com/dominiomedios/live/playlist.m3u8"
     }

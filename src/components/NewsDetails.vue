@@ -11,10 +11,10 @@
         {{getNew()}}
         
         <div v-if="content!=null" style="margin-top:30px!important; padding:0px 30px;">
-            <ion-card-title style="font-size:25px; margin-bottom:10px;">{{content.yoast_head_json.title}}</ion-card-title>
+            <ion-card-title style="font-size:25px; margin-bottom:10px;">{{content.title}}</ion-card-title>
             <ion-row>
               <ion-col size="10">
-                <ion-card-subtitle style="margin-bottom:20px;">{{dateFormat(content.date)}}</ion-card-subtitle>
+                <ion-card-subtitle style="margin-bottom:20px;">{{dateFormat(content.created_at)}}</ion-card-subtitle>
               </ion-col>
               <ion-col size="2">
                 <ion-button @click="compartir()" class="ion-justify-content-end" style="margin-top:-20px;" >
@@ -22,7 +22,7 @@
                 </ion-button>
               </ion-col>
             </ion-row>
-            <ion-img class="ion-justify-content-start" :src="content.yoast_head_json.og_image[0].url" ></ion-img>
+            <ion-img class="ion-justify-content-start" :src="content.featured_media_path" ></ion-img>
             <div v-html="htmlContent"></div>
         </div>
         <div>
@@ -73,22 +73,22 @@ export default defineComponent({
   },
   computed:{
     htmlContent(){
-        return '<div class="content-style">' + this.content.content.rendered + '</div><style>.wp-video-shortcode{width:calc(100vw - 60px)!important; height:auto!important;} .content-style div :first-child{font-size:14px;} .content-style h4{font-size: 18px;text-align: justify;}</style>'
+        return '<div class="content-style">' + this.content.content + '</div><style>.wp-video-shortcode{width:calc(100vw - 60px)!important; height:auto!important;} .content-style div :first-child{font-size:14px;} .content-style h4{font-size: 18px;text-align: justify;}</style>'
     }
   },
   methods:{
     compartir(){
       Share.share({
-        title: this.content.yoast_head_json.title,
-        text: this.content.yoast_head_json.description,
-        url: this.content.link,
+        title: this.content.title,
+        text: this.content.short_description,
+        url: 'https://gamavision.com/post/?post_id=' + this.content.id,
         dialogTitle: 'Compartir Noticia',
       });
     },
     getNew(){
         if(!this.pause){
-            axios.get('https://dominiomedios.com/wp-json/wp/v2/posts?include[]=' + this.$route.params.id).then(response => {
-                this.content = Object.freeze(response.data[0])
+            axios.get('https://gv.unocrm.mx/api/v1/news?filter[id]=' + this.$route.params.id).then(response => {
+                this.content = Object.freeze(response.data.data[0])
             })
         }this.pause = true
     },

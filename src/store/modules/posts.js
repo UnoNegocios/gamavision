@@ -14,16 +14,16 @@ const actions = {
         var items_per_page = props.items_per_page
         var category = props.category
         return new Promise((resolve, reject) => {
-            axios.get('https://dominiomedios.com/wp-json/wp/v2/posts?_fields=id,date,title,yoast_head_json.og_image'+category + items_per_page).then(response => {
-                commit('setPostByCategory', response.data);
+            axios.get('https://gv.unocrm.mx/api/v1/news?filter[Categories.id]'+category + '&per_page=' + items_per_page).then(response => {
+                commit('setPostByCategory', response.data.data);
                 state.show_by_category = true;
             }).finally(() => (resolve(false)))
         })
     },
     getPosts( {commit, state}, items_per_page ){
         return new Promise((resolve, reject) => {
-            axios.get('https://dominiomedios.com/wp-json/wp/v2/posts?_embed=wp:term&per_page='+items_per_page).then(response => {
-                commit('setPosts', response.data);
+            axios.get('https://gv.unocrm.mx/api/v1/news?per_page='+items_per_page).then(response => {
+                commit('setPosts', response.data.data);
                 state.show = true;
             }).finally(() => (resolve(false)))
         })
