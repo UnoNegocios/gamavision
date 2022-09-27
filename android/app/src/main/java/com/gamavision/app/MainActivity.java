@@ -1,4 +1,4 @@
-package com.example.myvuefirstappradio;
+package com.gamavision.app;
 
 import com.getcapacitor.BridgeActivity;
 
