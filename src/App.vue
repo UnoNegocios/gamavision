@@ -113,7 +113,7 @@ import { defineComponent } from 'vue';
 import Login from "../src/views/Login"
 import { search, newspaper, person, menu, radio, videocam, star} from "ionicons/icons"
 import axios from 'axios';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import { ref } from 'vue'
 
 
@@ -248,7 +248,7 @@ export default defineComponent({
     },
     
     checkLogin(){
-      Storage.get({ key: 'token' }).then(resp=>{
+      Preferences.get({ key: 'token' }).then(resp=>{
         axios({
           method: "GET",
           url: "https://gv.unocrm.mx/api/v1/user/current",

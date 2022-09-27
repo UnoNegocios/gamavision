@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from '../../router';
 
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 const state = {
   user: {},
   token:null
@@ -9,14 +9,14 @@ const state = {
 const getters = {};
 const actions = {
   getToken({ commit }) {
-    Storage.get({ key: 'token' }).then(resp=>{
+    Preferences.get({ key: 'token' }).then(resp=>{
       commit("setToken", resp)
     });
   },
   registerUser({commit}, user){
     axios.post("https://gv.unocrm.mx/api/v1/user/register", user).then(response=>{
       commit("setToken", response.data.access_token)
-      Storage.set({
+      Preferences.set({
         key: 'token',
         value: response.data.access_token,
       }).then(resp=>{
@@ -25,7 +25,7 @@ const actions = {
     })
   },
   getUser({ commit }) {
-    Storage.get({ key: 'token' }).then(resp=>{
+    Preferences.get({ key: 'token' }).then(resp=>{
       axios({
         method: "GET",
         url: "https://gv.unocrm.mx/api/v1/user/current",
@@ -44,7 +44,7 @@ const actions = {
       })
       .then(response => {
           commit("setToken", response.data.access_token)
-          Storage.set({
+          Preferences.set({
             key: 'token',
             value: response.data.access_token,
           }).then(resp=>{
@@ -54,7 +54,7 @@ const actions = {
   },
   logoutUser({commit}) {
     commit("setToken", null)
-    Storage.remove({
+    Preferences.remove({
       key: 'token'
     }).then(resp=>{
       router.push('/login') 

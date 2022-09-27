@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import router from '../../router';
 const state = {
     lives:[],
@@ -14,7 +14,7 @@ const getters = {};
 
 const actions = {
     getLives({commit}, values){
-        Storage.get({ key: 'token' }).then(resp=>{
+        Preferences.get({ key: 'token' }).then(resp=>{
             axios({
               method: "GET",
               url: "https://gv.unocrm.mx/api/v1/live",
@@ -31,7 +31,7 @@ const actions = {
         //router.push('/live/'+value.id)
     },
     getLive({commit}, id){
-        Storage.get({ key: 'token' }).then(resp=>{
+        Preferences.get({ key: 'token' }).then(resp=>{
             axios({
                 method: "GET",
                 url: "https://gv.unocrm.mx/api/v1/live?filter[id]=" + id,

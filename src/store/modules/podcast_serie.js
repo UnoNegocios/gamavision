@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 const state = {
     series:[]
 };
@@ -8,7 +8,7 @@ const getters = {};
 const actions = {
     getSeries({commit}, values){
 
-        Storage.get({ key: 'token' }).then(resp=>{
+        Preferences.get({ key: 'token' }).then(resp=>{
             axios({
               method: "GET",
               url: "https://gv.unocrm.mx/api/v1/podcast_serie",
