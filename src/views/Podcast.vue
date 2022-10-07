@@ -3,18 +3,23 @@
     <ion-content :fullscreen="true">
           <ion-card :router-link="`/podcast_list/${serie.id}`" v-for="(serie, index) in series" v-bind:key="index" @click="selected=item" style="padding:0px 0px; margin: 10px;">
             <ion-row>
-              <ion-col size="4">
-                <ion-img style="margin-right:10px;" :src="'https://gv.unocrm.mx/files/' + serie.image_url"></ion-img>
+              <ion-col size="4" style="flex: none; margin: auto;">
+                <ion-img style="margin-right:5px;" :src="'https://gv.unocrm.mx/files/' + serie.image_url"></ion-img>
               </ion-col>
               <ion-col size="8">
-                <ion-card-title style="margin-bottom:10px; font-size:18px;">{{serie.name}}</ion-card-title>
+                <ion-card-title style="margin-bottom:5px; font-size:18px;">{{serie.name}}</ion-card-title>
+
+                <ion-chip style="font-size:10px; padding: 10px!important; margin-bottom:5px; height: 20px;">
+                  <ion-icon style="font-size: 10px;" :icon="list" color="dark"></ion-icon>
+                  <ion-label>{{serie.podcasts_count}} Episodios</ion-label>
+                </ion-chip>
+
+                <br/>
+
                 <span>{{serie.description}}</span>
               </ion-col>
             </ion-row>
-            <ion-chip style="transform:scale(0.7); position:absolute; right:-15px; top:-5px;">
-              <ion-icon :icon="list" color="dark"></ion-icon>
-              <ion-label>{{serie.podcasts_count}} Episodios</ion-label>
-            </ion-chip>
+            
           </ion-card>
 
           

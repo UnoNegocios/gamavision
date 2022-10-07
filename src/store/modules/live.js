@@ -3,17 +3,14 @@ import { Preferences } from '@capacitor/preferences';
 import router from '../../router';
 const state = {
     lives:[],
-    live:{
-        "id": 3,
-        "name": "GAMAVISION Canal 1",
-        "image_url": "1659044925.webp",
-        "url": "https://streamyes.alsolnet.com/dominiomedios/live/playlist.m3u8"
-    }
+    live:[],
+    show:false
 };
 const getters = {};
 
 const actions = {
-    getLives({commit}, values){
+    getLives({commit, state}, values){
+        state.show = false
         Preferences.get({ key: 'token' }).then(resp=>{
             axios({
               method: "GET",
@@ -23,34 +20,26 @@ const actions = {
               },
             }).then(response => {
               commit("setLives", response.data.data);
+              commit("setLive", response.data.data[0]);
             });
         })
     },
-    currentLive({commit}, value){
-        commit("setLive", value);
-        //router.push('/live/'+value.id)
-    },
-    getLive({commit}, id){
-        Preferences.get({ key: 'token' }).then(resp=>{
-            axios({
-                method: "GET",
-                url: "https://gv.unocrm.mx/api/v1/live?filter[id]=" + id,
-                headers: {
-                    "Authorization": "Bearer " + resp.value,
-                },
-            }).then(response => {
-                commit("setLive", response.data.data[0]);
-            })
-        });
+    currentLive({commit, state}, value){
+        state.show = false
+        var lives = JSON.parse(JSON.stringify(state.lives))
+        var live = JSON.parse(JSON.stringify(value))
+        commit("setLive", lives.filter(item=>item.id == live.id)[0])
     },
 };
 
 const mutations = {
     setLives(state, data){
         state.lives = data;
+        state.show = true
     },
     setLive(state, data){
         state.live = data;
+        state.show = true
     }
 };
 

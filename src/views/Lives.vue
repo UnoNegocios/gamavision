@@ -7,10 +7,10 @@
             <ion-icon :icon="arrowBack"></ion-icon>
           </ion-button-->
         </ion-buttons>
-        <ion-title>Señal en VIVO<!--{{live.name}}--></ion-title>
+        <ion-title>Video en VIVO<!--{{live.name}}--></ion-title>
       </ion-toolbar>
       
-        <ion-card style="margin:20px;">
+        <ion-card v-if="showReproductor" style="margin:20px;">
             <video autoplay class="wp-video-shortcode" id="video-497065-1" style="width:100%; height:45vw;" preload="metadata" controls="controls">
                 <source type="video/mp4" :src="live.url">
                 <a :href="live.url">
@@ -19,8 +19,19 @@
             </video>
         </ion-card>
 
-        <ion-card style="background:transparent; margin:100px 30px;">
-            <video style="height: 55px; width: 100%;" controls autoplay name="media"><source src="https://icecasthd.net/proxy/dominioradio/live" type="audio/mpeg"></video>
+        {{live}}
+
+        <ion-toolbar style="filter: brightness(2);">
+        <ion-buttons slot="start">
+          <!--ion-button :router-link="$router.options.history.state.back">
+            <ion-icon :icon="arrowBack"></ion-icon>
+          </ion-button-->
+        </ion-buttons>
+        <ion-title>Audio en VIVO<!--{{live.name}}--></ion-title>
+      </ion-toolbar>
+
+        <ion-card v-if="showReproductor" style="background:transparent; margin:30px;">
+            <video style="height: 55px; width: 100%;" controls autoplay name="media"><source :src="live.url" type="audio/mpeg"></video>
         </ion-card>
 
         
@@ -78,7 +89,7 @@ export default defineComponent({
   },
   setup(){
     return{
-      arrowBack
+      arrowBack,
     }
   },
   computed:{
@@ -87,16 +98,18 @@ export default defineComponent({
     },
     lives(){
       return this.$store.state.live.lives
+    },
+    showReproductor(){
+      return this.$store.state.live.show
     }
   },
   methods:{
     openLive(live){
-      this.$store.dispatch('live/currentLive', live);
+      this.$store.dispatch('live/currentLive', live)
     }
   },
   created(){
     this.$store.dispatch('live/getLives');
-    this.$store.dispatch('live/getLive', 1);
   }
 });
 </script>

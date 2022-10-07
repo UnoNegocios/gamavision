@@ -7,7 +7,7 @@
             <ion-icon :icon="arrowBack"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-title style="text-align:center;">Señal en VIVO<!--{{live.name}}--></ion-title>
+        <ion-title style="text-align:center;">Video en VIVO<!--{{live.name}}--></ion-title>
       </ion-toolbar>
       
         <ion-card style="margin:20px;">
@@ -18,8 +18,15 @@
                 </a>
             </video>
         </ion-card>
-
-        <div>hola</div>
+        
+        <ion-toolbar style="filter: brightness(2); text-align:center;">
+        <ion-buttons slot="start">
+          <ion-button :router-link="$router.options.history.state.back">
+            <ion-icon :icon="arrowBack"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align:center;">Audio en VIVO<!--{{live.name}}--></ion-title>
+      </ion-toolbar>
 
         <ion-card style="background:transparent;">
             <video style="height: 55px; width: 100%;" controls autoplay name="media"><source src="https://icecasthd.net/proxy/dominioradio/live" type="audio/mpeg"></video>

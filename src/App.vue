@@ -1,9 +1,9 @@
 <template>
   <ion-app :style="background">
-    <div id="container" v-if="logo||(!dialog && token==='')">
+    <div id="container" style="height:100vh;" v-if="logo||(!dialog && token==='')">
 
-      <ion-img style="margin:30px; margin-bottom:20vh;" src="/title-grey.png" ></ion-img>
-      <ion-img style="margin:30px;" src="/isotipo.png" ></ion-img>
+      <ion-img style="width: 80%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" src="/isotipo.png" ></ion-img>
+      <ion-img style="position: absolute; bottom: 50px; margin: 0px 50px;" src="/title-grey.png" ></ion-img>
 
     </div>
 
@@ -96,7 +96,7 @@
 
       <ion-content :scroll-events="true" style="height:calc(100vh - 220px)!important;">
             <ion-list style="height:calc(100vh - 220px)!important; overflow-y: scroll;">
-              <ion-item v-for="(category, index) in categories" v-bind:key="index" :href="'/posts/' + category.id"><!--ion-icon style="margin-right:10px; font-size:16px;" :icon="star" /-->- {{category.name}}</ion-item>
+              <ion-item v-for="(category, index) in categories" v-bind:key="index" :href="'/posts/' + category.id">- {{category.name}}</ion-item>
             </ion-list>
         </ion-content>
 
