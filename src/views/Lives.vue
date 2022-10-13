@@ -19,8 +19,6 @@
             </video>
         </ion-card>
 
-        {{live}}
-
         <ion-toolbar style="filter: brightness(2);">
         <ion-buttons slot="start">
           <!--ion-button :router-link="$router.options.history.state.back">
@@ -31,7 +29,7 @@
       </ion-toolbar>
 
         <ion-card v-if="showReproductor" style="background:transparent; margin:30px;">
-            <video style="height: 55px; width: 100%;" controls autoplay name="media"><source :src="live.url" type="audio/mpeg"></video>
+            <video style="height: 55px; width: 100%;" controls name="media"><source :src="live.url" type="audio/mpeg"></video>
         </ion-card>
 
         
@@ -41,7 +39,7 @@
         </div>
 
         <ion-grid>
-        <ion-row>
+        <!--ion-row>
           <ion-col size="6" v-for="(live, index) in lives" v-bind:key="index">
             <div :style="'background-image: url(https://gv.unocrm.mx/files/' + live.image_url + '); background-repeat: no-repeat; background-size: cover;'">
               <ion-card @click="openLive(live)" :style="'background-image: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 69%); height:40vw; background-color: rgb(255 0 0 / 0%); margin:0px;'">
@@ -53,7 +51,7 @@
           </ion-col>
 
           
-        </ion-row>
+        </ion-row-->
       </ion-grid>
 
         

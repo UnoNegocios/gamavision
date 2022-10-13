@@ -14,7 +14,7 @@
             <video autoplay class="wp-video-shortcode" id="video-497065-1" style="width:100%; height:45vw;" preload="metadata" controls="controls">
                 <source type="video/mp4" :src="live.url">
                 <a :href="live.url">
-                {{live.url}}
+                
                 </a>
             </video>
         </ion-card>
@@ -29,7 +29,7 @@
       </ion-toolbar>
 
         <ion-card style="background:transparent;">
-            <video style="height: 55px; width: 100%;" controls autoplay name="media"><source src="https://icecasthd.net/proxy/dominioradio/live" type="audio/mpeg"></video>
+            <video style="height: 55px; width: 100%;" controls name="media"><source src="https://icecasthd.net/proxy/dominioradio/live" type="audio/mpeg"></video>
         </ion-card>
 
         
