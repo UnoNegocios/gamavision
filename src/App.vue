@@ -55,8 +55,8 @@
               </ion-tab-button>
               
               <ion-tab-button tab="podcast" href="/podcast" style="background:#4d30f2!important; color:white!important;">
-                <ion-icon :icon="radio" />
-                <ion-label>Podcast</ion-label>
+                <ion-icon style="color:white!important;" :icon="radio" />
+                <ion-label style="color:white!important;">Podcast</ion-label>
               </ion-tab-button>
               
             </ion-tab-bar>

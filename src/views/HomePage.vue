@@ -21,7 +21,7 @@
           <ion-chip @click="segmentChanged('inicio')" :style="'display: inline-table; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-shadow: 0px 0px 3px white;' + background('inicio')" :outline="'inicio' != category" :color="selectedCategoryColor('inicio')">
               Inicio
           </ion-chip>
-          <ion-chip @click="segmentChanged(item.id)" v-for="(item, index) in categories" v-bind:key="index" style="display: inline-table; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-shadow: 0px 0px 3px white;" :outline="item.id != category" :color="selectedCategoryColor(item.id)">
+          <ion-chip @click="segmentChanged(item.id)" v-for="(item, index) in categories" v-bind:key="index" :style="'display: inline-table; width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-shadow: 0px 0px 3px white;' + background(item.id)" :outline="item.id != category" :color="selectedCategoryColor(item.id)">
               {{item.name}}
           </ion-chip>
         </ion-segment>
@@ -130,10 +130,11 @@ export default defineComponent({
       }
     },
     segmentChanged(category_id) {
+      this.category = category_id
       if(category_id=='inicio'){
-        this.$store.dispatch('posts/getPosts', '3')
+        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'3', category:''})
       }else{
-        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'3', category:this.category})
+        this.$store.dispatch('posts/getPostByCategory', {items_per_page:'3', category:category_id})
       }
     },
     dateFormat(date){
