@@ -41,17 +41,18 @@
                 <ion-progress-bar v-if="loader" type="indeterminate"></ion-progress-bar>
               </ion-toolbar>
             </ion-header>
+            
             <ion-router-outlet/>
 
             <ion-tab-bar slot="bottom">
               <ion-tab-button tab="home" href="/home" style="background:#4d30f2!important; color:white!important;">
-                <ion-icon :icon="newspaper" />
-                <ion-label>Noticias</ion-label>
+                <ion-icon style="color:white!important;" :icon="newspaper" />
+                <ion-label style="color:white!important;">Noticias</ion-label>
               </ion-tab-button>
               
               <ion-tab-button tab="live" href="/lives" style="background:#4d30f2!important; color:white!important;">
-                <ion-icon :icon="videocam" />
-                <ion-label>En Vivo</ion-label>
+                <ion-icon style="color:white!important;" :icon="videocam" />
+                <ion-label style="color:white!important;">En Vivo</ion-label>
               </ion-tab-button>
               
               <ion-tab-button tab="podcast" href="/podcast" style="background:#4d30f2!important; color:white!important;">
@@ -106,6 +107,9 @@
     <login v-if="!dialog && !token"/>
   </ion-app>
 </template>
+
+<style src='@ionic/core/css/core.css'></style>
+<style src='@ionic/core/css/ionic.bundle.css'></style>
 
 <script>
 import { menuController, IonTitle, IonMenuToggle, IonList, IonButton, IonMenu, IonAvatar, IonSearchbar, IonApp, IonRouterOutlet, IonHeader, IonIcon, IonToolbar, IonImg, IonRow, IonCol, IonTabButton, IonLabel, IonTabBar, IonTabs, IonPage, IonContent, IonFooter, IonProgressBar, IonItem} from '@ionic/vue';
@@ -307,5 +311,13 @@ export default defineComponent({
 
 #container a {
   text-decoration: none;
+}
+
+ion-navbar.toolbar.toolbar-ios.statusbar-padding,
+ion-navbar.toolbar-ios ion-title.title-ios,
+ion-toolbar.toolbar.toolbar-ios.statusbar-padding,
+ion-toolbar.toolbar-ios ion-title.title-ios {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 }
 </style>
