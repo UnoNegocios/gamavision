@@ -26,15 +26,9 @@
           </ion-chip>
         </ion-segment>
 
-        <ion-slides pager="false" :options="slideOpts2">
-          <ion-slide>
-              <ion-img style="margin:30px;" src="https://kfc.com.mx/Content/OnlineOrderingImages/Menu/Category/Carousel/BOX_5en1.jpg?v=0.1" ></ion-img>
-          </ion-slide>
-          <ion-slide>
-              <ion-img style="margin:30px;" src="https://cdn.buttercms.com/77XpQo2GQsCaLn8TMBZS" ></ion-img>
-          </ion-slide>
-          <ion-slide>
-              <ion-img style="margin:30px;" src="https://cdn.buttercms.com/77XpQo2GQsCaLn8TMBZS" ></ion-img>
+        <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts2">
+          <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+              <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
           </ion-slide>
         </ion-slides>
 
@@ -50,11 +44,13 @@
           </div>
 
           
-          <div>
-            <ion-img style="margin:30px;" src="https://pbs.twimg.com/media/FW1Bcy7VEAEAJ7S.jpg" ></ion-img>
-          </div>
+          <ion-slides v-if="banners_slider2!=undefined" pager="false" :options="slideOpts2">
+            <ion-slide v-for="banner in banners_slider2" :key="banner.id" @click="clicAd(banner)">
+                <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+            </ion-slide>
+          </ion-slides>
 
-          <ion-button expand="block" color="primary" style="margin:30px;" :href="'/posts/' + category">VER MÁS</ion-button>
+          <ion-button expand="block" color="primary" style="margin:30px;" :router-link="`/posts/${category}`">VER MÁS</ion-button>
 
           
       <!--/div-->
@@ -63,6 +59,7 @@
 </template>
 
 <script>
+
 import { IonText, IonContent, IonHeader, IonSegment, IonChip, IonPage, IonTitle, IonToolbar, IonSlides, IonSlide, IonButton, IonCard, IonCardTitle, IonCardSubtitle, IonImg } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import axios from 'axios'
@@ -88,6 +85,8 @@ export default defineComponent({
   },
   data(){
     return{
+      banners_slider: undefined,
+      banners_slider2: undefined,
       slideOpts: {
         speed: 500,
         autoplay:true,
@@ -117,6 +116,11 @@ export default defineComponent({
     },
   },
   methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     background(category_id){
       if(this.category == category_id){
         return 'background:#4d30f2;'
@@ -155,6 +159,15 @@ export default defineComponent({
             return dias_semana[fecha.getDay()] + ', ' + fecha.getDate() + ' de ' + meses[fecha.getMonth()] + ' de ' + fecha.getUTCFullYear();
         }
     },
+  },
+  created(){
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Inicio&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Inicio&itemsPerPage=3').then(response=>{
+      this.banners_slider2 = response.data
+       
+    })
   }
 });
 </script>

@@ -8,19 +8,19 @@
     </div>
 
     <div id="container" v-else-if="dialog">
-      <ion-img style="margin:0px;" src="/telcel.jpg" ></ion-img>
+      <ion-img style="margin:0px;" @click="clicAd(fullscreen_banner)" :src="fullscreen_banner.image" ></ion-img>
     </div>
 
-    <ion-content id="menuContent" v-if="!dialog && token">
+    <ion-content id="menuContent" v-if="!dialog && token" style="border-color:#4d30f2; background-color:#4d30f2;">
       
         
           
-        <ion-page>
+        <ion-page style="border-color:#4d30f2; background-color:#4d30f2;">
           
-          <ion-tabs>
-            <ion-header>
-              <ion-toolbar style="padding-top:0px;">
-                <ion-row  style="background:#4d30f2;">
+          <ion-tabs style="border-color:#4d30f2;">
+            <ion-header class="ion-no-border" style="border-color:#4d30f2;"> <!-- ion-safe-area-top -->
+              <ion-toolbar style="padding-top:0px; border-color:#4d30f2;">
+                <ion-row class="header-color" style="border-color:#4d30f2; margin:-4px!important;">
                   <ion-col size="2">
                     <ion-icon style="margin:10px; font-size:25px;" @click="openMenu()" :icon="menu"></ion-icon>
                   </ion-col>
@@ -97,7 +97,7 @@
 
       <ion-content :scroll-events="true" style="height:calc(100vh - 220px)!important;">
             <ion-list style="height:calc(100vh - 220px)!important; overflow-y: scroll;">
-              <ion-item v-for="(category, index) in categories" v-bind:key="index" :href="'/posts/' + category.id">- {{category.name}}</ion-item>
+              <ion-item v-for="(category, index) in categories" v-bind:key="index" @click="closeMenu()" :router-link="`/posts/${category.id}`">- {{category.name}}</ion-item>
             </ion-list>
         </ion-content>
 
@@ -152,6 +152,7 @@ export default defineComponent({
   },
   data() {
     return { 
+      fullscreen_banner:{image:'', url:'', id:''},
       token: '',
       showSearch: false,
       searchInput:'',
@@ -188,6 +189,14 @@ export default defineComponent({
     }
   },
   created(){
+    var perro = 'Fullscreen App'
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=' + perro + '&itemsPerPage=3').then(response=>{
+      if(response.data.length>0){
+        this.fullscreen_banner.image = response.data[0].image_url
+        this.fullscreen_banner.url = response.data[0].url
+        this.fullscreen_banner.id = response.data[0].id
+      }
+    })
     this.checkLogin()
     this.$store.dispatch('posts/getPosts', 6)
     this.$store.dispatch('categories/getCategories').then(response=>{
@@ -237,6 +246,11 @@ export default defineComponent({
     this.callFunction()
   },
   methods: {
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     callFunction: function () {
       var v = this;
       setTimeout(function () {
@@ -283,9 +297,37 @@ export default defineComponent({
     openMenu() {
       menuController.open('app-menu');
     },
-  },
+    closeMenu() {
+      menuController.close('app-menu');
+    },
+  }
 });
 </script>
+
+<style>
+body{
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
+  margin-bottom: constant(safe-area-inset-bottom, 30px);
+  margin-bottom: env(safe-area-inset-bottom, 30px);
+  padding-bottom: constant(safe-area-inset-bottom, 30px);
+  padding-bottom: env(safe-area-inset-bottom, 30px);
+  background-color: #4d30f2;
+}
+html, body {
+  width: 100vw;
+  height: 100vh;
+}
+html {
+  background-color: #4d30f2;
+}
+.header-color{
+  background:#4d30f2;
+}
+.ios .header-color{
+  background:red;
+}
+</style>
 
 <style scoped>
 #container {
@@ -313,11 +355,8 @@ export default defineComponent({
   text-decoration: none;
 }
 
-ion-navbar.toolbar.toolbar-ios.statusbar-padding,
-ion-navbar.toolbar-ios ion-title.title-ios,
-ion-toolbar.toolbar.toolbar-ios.statusbar-padding,
-ion-toolbar.toolbar-ios ion-title.title-ios {
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
+.toolbar-container{
+  padding: 0px!important;
 }
+
 </style>

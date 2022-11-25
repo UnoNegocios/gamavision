@@ -18,9 +18,11 @@
       </ion-toolbar>
 
       
-      <div>
-        <ion-img style="margin:30px;" src="https://kfc.com.mx/Content/OnlineOrderingImages/Menu/Category/Carousel/BOX_5en1.jpg?v=0.1" ></ion-img>
-      </div>
+      <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts">
+        <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+            <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+        </ion-slide>
+      </ion-slides>
 
 
       <ion-card v-for="(podcast, index) in podcasts" v-bind:key="index" style="background-color:#891235; padding:20px;">
@@ -41,6 +43,7 @@ import { defineComponent } from 'vue';
 import AudioPlayer from 'vue3-audio-player'
 import 'vue3-audio-player/dist/style.css'
 import { list, arrowBack } from "ionicons/icons"
+import axios from 'axios'
 
 export default defineComponent({
   name: 'SerieDetail',
@@ -64,6 +67,11 @@ export default defineComponent({
   },
   setup(){
     return{
+      banners_slider:undefined,
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
       list,
       arrowBack
     }
@@ -75,6 +83,11 @@ export default defineComponent({
   },
   created(){
     this.$store.dispatch('podcast/getPodcasts', this.$route.params.id);
+    this.$store.dispatch('live/getLives');
+    var perro = 'Episodio'
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=' + perro + '&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
   },
   computed:{
     podcasts(){
@@ -85,6 +98,11 @@ export default defineComponent({
     }
   },
   methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     /*
     playAudio(id) {
         document.getElementById(id).play();

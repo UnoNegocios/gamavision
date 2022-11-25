@@ -24,9 +24,11 @@
 
           
 
-          <div>
-            <ion-img style="margin:30px;" src="https://pbs.twimg.com/ext_tw_video_thumb/1519347697278341121/pu/img/JmoGICv24w-PeCXJ.jpg" ></ion-img>
-          </div>
+          <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts">
+            <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+                <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+            </ion-slide>
+          </ion-slides>
     </ion-content>
   </ion-page>
 </template>
@@ -35,6 +37,7 @@
 import { IonText, IonContent, IonLabel, IonRow, IonCol, IonHeader, IonPage, IonTitle, IonToolbar, IonSlides, IonSlide, IonButton, IonCard, IonCardTitle, IonImg } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { list } from "ionicons/icons"
+import axios from 'axios'
 
 export default defineComponent({
   name: 'Podcast',
@@ -55,6 +58,15 @@ export default defineComponent({
     IonCardTitle,
     IonImg
   },
+  data(){
+    return{
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
+      banners_slider:undefined
+    }
+  },
   setup(){
     return{
       list
@@ -62,12 +74,24 @@ export default defineComponent({
   },
   created(){
     this.$store.dispatch('podcast_serie/getSeries');
+    this.$store.dispatch('live/getLives');
+    var perro = 'Podcast'
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=' + perro + '&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
   },
   computed:{
     series(){
       return this.$store.state.podcast_serie.series
     }
   },
+  methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
+  }
 });
 </script>
 

@@ -25,9 +25,11 @@
             <ion-img class="ion-justify-content-start" :src="content.featured_media_path" ></ion-img>
             <div v-html="htmlContent"></div>
         </div>
-        <div>
-          <ion-img style="margin:30px;" src="https://cdn.buttercms.com/77XpQo2GQsCaLn8TMBZS" ></ion-img>
-        </div>
+        <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts">
+          <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+              <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+          </ion-slide>
+        </ion-slides>
     </ion-content>
   </ion-page>
 </template>
@@ -67,6 +69,11 @@ export default defineComponent({
   },
   data(){
     return{
+      banners_slider:undefined,
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
         content:null,
         pause: false
     }
@@ -76,12 +83,22 @@ export default defineComponent({
         return '<div class="content-style">' + this.content.content + '</div><style>.wp-video-shortcode{width:calc(100vw - 60px)!important; height:auto!important;} .content-style div :first-child{font-size:14px;} .content-style h4{font-size: 18px;text-align: justify;}</style>'
     }
   },
+  created(){
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Noticia&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
+  },
   methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     compartir(){
       Share.share({
         title: this.content.title,
         text: this.content.short_description,
-        url: 'https://gamavision.com/post/?post_id=' + this.content.id,
+        url: 'https://gamavision.com/noticia/?n=' + this.content.title.replace(/-/g, 'gionmdio').replace(/ /g, '-').replace(/%/g, 'porciento'),
         dialogTitle: 'Compartir Noticia',
       });
     },

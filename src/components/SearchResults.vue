@@ -13,9 +13,11 @@
               <ion-card-title class="ion-padding" style="font-size: 18px; font-weight: 600;">{{element.title}}</ion-card-title>
           </ion-card>
       </div>
-      <div>
-        <ion-img style="margin:30px;" src="https://www.publimetro.com.mx/resizer/YwH2DcYkFeyA5SMx-i-pwOwYSbQ=/800x0/filters:format(jpg):quality(70)/cloudfront-us-east-1.images.arcpublishing.com/metroworldnews/LWTDE4M4H5C2NCFQOSUNLV2SOU.jpg" ></ion-img>
-      </div>
+      <ion-slides pager="false" v-if="banners_slider!=undefined" :options="slideOpts">
+        <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+            <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+        </ion-slide>
+      </ion-slides>
     </ion-content>
   </ion-page>
 </template>
@@ -48,13 +50,29 @@ export default defineComponent({
   },
   data(){
     return{
-      
+      banners_slider:undefined,
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
     }
   },
   computed:{
     results(){
         return this.$store.state.search.result
     }
+  },
+  created(){
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Noticia&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
+  },
+  methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
   }
 });
 </script>

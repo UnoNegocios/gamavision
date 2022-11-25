@@ -2,6 +2,12 @@
   <ion-page>
     <ion-content v-if="news.show" :fullscreen="true">
 
+            <ion-slides v-if="banners_slider2!=undefined" pager="false" :options="slideOpts">
+              <ion-slide v-for="banner in banners_slider2" :key="banner.id" @click="clicAd(banner)">
+                  <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+              </ion-slide>
+            </ion-slides>
+
           <div style="margin-top:10px;" v-for="(element, index) in news.data" v-bind:key="index">
             <ion-card style="margin-top:10px;" :router-link="`/detail/${element.id}`">
               <ion-img class="ion-justify-content-start" :src="element.featured_media_path" ></ion-img>
@@ -10,10 +16,14 @@
                 <ion-card-subtitle>{{dateFormat(element.created_at)}}</ion-card-subtitle>
               </div>
             </ion-card>
-            <div v-if="( ( index - 1 ) % 3 ) == 0">
-              <ion-img style="margin:30px;" src="https://cdn.buttercms.com/77XpQo2GQsCaLn8TMBZS" ></ion-img>
-            </div>
+            
           </div>
+
+          <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts">
+            <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+                <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+            </ion-slide>
+          </ion-slides>
 
       <!--/div-->
     </ion-content>
@@ -46,7 +56,13 @@ export default defineComponent({
       news:{
         data:[],
         show:false
-      }
+      },
+      banners_slider2:undefined,
+      banners_slider:undefined,
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
     }
   },
   computed:{
@@ -55,6 +71,11 @@ export default defineComponent({
     }
   },
   methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     dateFormat(date){
       if(date!=undefined){
         // Creamos el objeto fecha instanciándolo con la clase Date
@@ -84,6 +105,12 @@ export default defineComponent({
     axios.get('https://gv.unocrm.mx/api/v1/news'+filter).then(response => {
       this.news.data = Object.freeze(response.data.data)
       this.news.show = true
+    })
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Categoría&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=Categoría&itemsPerPage=3').then(response=>{
+      this.banners_slider2 = response.data
     })
   }
 });

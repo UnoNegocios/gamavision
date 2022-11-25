@@ -11,11 +11,8 @@
       </ion-toolbar>
       
         <ion-card v-if="showReproductor" style="margin:20px;">
-            <video autoplay class="wp-video-shortcode" id="video-497065-1" style="width:100%; height:45vw;" preload="metadata" controls="controls">
-                <source type="video/mp4" :src="live.url">
-                <a :href="live.url">
-                {{live.url}}
-                </a>
+            <video :autoplay="true" class="wp-video-shortcode" id="video-497065-1" style="width:100%; height:45vw;" controls>
+                <source type="video/mp4" :src="'https://streamlov.alsolnet.com/gamavision/live/playlist.m3u8'">
             </video>
         </ion-card>
 
@@ -29,14 +26,18 @@
       </ion-toolbar>
 
         <ion-card v-if="showReproductor" style="background:transparent; margin:30px;">
-            <video style="height: 55px; width: 100%;" controls name="media"><source :src="live.url" type="audio/mpeg"></video>
+            <video :autoplay="false" style="height: 55px; width: 100%;" controls name="media">
+              <source :src="'https://streamlov.alsolnet.com/gamavision/live/playlist.m3u8'" type="audio/mpeg">
+            </video>
         </ion-card>
 
         
 
-        <div>
-          <ion-img style="margin:30px;" src="https://prodynamics.vtexassets.com/assets/vtex.file-manager-graphql/images/9eaeb7fe-5f39-4524-874a-51a1d12717c8___ddbc1044de0ae7e7b7fe580d9b4a1314.jpg" ></ion-img>
-        </div>
+        <ion-slides v-if="banners_slider!=undefined" pager="false" :options="slideOpts">
+          <ion-slide v-for="banner in banners_slider" :key="banner.id" @click="clicAd(banner)">
+              <ion-img style="margin:30px;" :src="banner.image_url" ></ion-img>
+          </ion-slide>
+        </ion-slides>
 
         <ion-grid>
         <!--ion-row>
@@ -62,6 +63,7 @@
 </template>
 
 <script>
+import axios from "axios"
 import { IonText, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSlides, IonSlide, IonButton, IonCard, IonCardTitle, IonImg, IonCol, IonGrid, IonRow } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { arrowBack } from "ionicons/icons"
@@ -88,6 +90,11 @@ export default defineComponent({
   setup(){
     return{
       arrowBack,
+      banners_slider:undefined,
+      slideOpts: {
+        speed: 2000,
+        autoplay:true,
+      },
     }
   },
   computed:{
@@ -102,12 +109,21 @@ export default defineComponent({
     }
   },
   methods:{
+    clicAd(ad){
+      fetch('https://gv.unocrm.mx/api/v1/click_ad/' + ad.id).then(response =>{
+        window.open(ad.url, '_blank');
+      });
+    },
     openLive(live){
       this.$store.dispatch('live/currentLive', live)
     }
   },
   created(){
     this.$store.dispatch('live/getLives');
+    var perro = 'En Vivo'
+    axios.get('https://gv.unocrm.mx/api/v1/display_ad?filter[is_in_time]=true&filter[is_in_hour]=true&filter[position]=' + perro + '&itemsPerPage=3').then(response=>{
+      this.banners_slider = response.data
+    })
   }
 });
 </script>
